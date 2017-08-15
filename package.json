@@ -1,0 +1,48 @@
+{
+  "name": "Kuhr",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "if-env NODE_ENV=production && yarn run -s serve || yarn run -s dev",
+    "build": "preact build",
+    "serve": "preact build && preact serve",
+    "dev": "preact watch",
+    "lint": "run-s lint:*",
+    "lint:css": "stylelint './src/**/*.js'",
+    "lint:js": "eslint src"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "eslint": "^4.4.1",
+    "eslint-config-prettier": "^2.3.0",
+    "eslint-plugin-flowtype": "^2.35.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-prettier": "^2.1.2",
+    "eslint-plugin-react": "^7.2.1",
+    "flow-bin": "^0.52.0",
+    "if-env": "^1.0.0",
+    "npm-run-all": "^4.0.2",
+    "preact-cli": "^1.4.1",
+    "preact-cli-lodash": "^1.1.0",
+    "preact-cli-plugin-flow": "^0.2.0",
+    "prettier": "^1.5.3",
+    "stylelint": "^8.0.0",
+    "stylelint-config-standard": "^17.0.0",
+    "stylelint-processor-styled-components": "^0.3.0"
+  },
+  "dependencies": {
+    "lokka": "^1.7.0",
+    "lokka-transport-http": "^1.6.1",
+    "preact": "^8.2.1",
+    "preact-compat": "^3.17.0",
+    "preact-redux": "^2.0.2",
+    "preact-router": "^2.5.5",
+    "react-apollo": "^1.2.0",
+    "react-redux": "^5.0.6",
+    "react-redux-form": "^1.14.0",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
+    "styled-components": "^2.1.2"
+  }
+}
