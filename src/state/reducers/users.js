@@ -1,65 +1,26 @@
-import { Lokka } from "lokka";
-import { Transport } from "lokka-transport-http";
 import { store } from "../../index";
+import { loginCall, registerCall } from "../../api/user";
+import { route } from "preact-router";
 
-const headers = {
-  Authorization: `Bearer ${localStorage.getItem("kuhrToken") || ""}`
-};
+const register = (name, email, password) =>
+  registerCall(name, email, password).then(result =>
+    loginAfterRegiter(result.createUser.email, password)
+  );
 
-const client = new Lokka({
-  transport: new Transport(
-    "https://api.graph.cool/simple/v1/cj6dky73136ee0121fpxxelzu",
-    { headers }
-  )
-});
-function register(name, email, password) {
-  return client
-    .mutate(
-      `
-    {
-      createUser(
-        name: "${name}",
-        authProvider: {
-        	email: {
-            email: "${email}",
-            password: "${password}"
-          }}) {
-        id
-        password
-        email
-      }
-    }
-  `
-    )
-    .then(result => login(result.createUser.email, password));
-}
+const loginAfterRegiter = (email, password) =>
+  loginCall(email, password).then(result => {
+    localStorage.setItem("kuhrToken", result.signinUser.token);
+    store.dispatch({ type: "REGISTERED_USER", payload: result.signinUser });
+    store.dispatch({ type: "LOGGED_USER", payload: result.signinUser });
+  });
 
-function login(email, password) {
-  return client
-    .mutate(
-      `
-    {
-      signinUser(
-        	email: {
-            email: "${email}",
-            password: "${password}"
-          }) {
-        user {
-          id,
-          name,
-          email
-        },
-        token
-      }
-    }
-    
-  `
-    )
-    .then(result => {
-      localStorage.setItem("kuhrToken", result.signinUser.token);
-      store.dispatch({ type: "REGISTERED_USER", payload: result.signinUser });
-    });
-}
+const login = (email, password) =>
+  loginCall(email, password).then(result => {
+    localStorage.setItem("kuhrToken", result.signinUser.token);
+    store.dispatch({ type: "LOGGED_USER", payload: result.signinUser });
+    store.dispatch({ type: "USER", payload: result.signinUser });
+    route("/dashboard");
+  });
 
 const user = (state = {}, action) => {
   switch (action.type) {
@@ -81,8 +42,14 @@ const user = (state = {}, action) => {
         loading: false,
         user: { ...action.payload }
       };
-    case "RESET_COUNT":
-      return 0;
+    case "LOGIN_USER":
+      login(action.payload.email, action.payload.password);
+
+    case "USER":
+      return {
+        ...state,
+        user: { ...action.payload }
+      };
     default:
       return state;
   }

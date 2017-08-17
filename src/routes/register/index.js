@@ -1,76 +1,88 @@
 import { h, Component } from "preact";
-import { LocalForm, Control } from "react-redux-form";
+import styled from "styled-components";
 import { connect } from "react-redux";
-import styles from "./style";
+import {
+  FadeIn,
+  SlideInRight,
+  SlideInLeft
+} from "animate-css-styled-components";
+import { Tabs, TabItem } from "rebass";
+
+import RegisterForm from "../../components/RegisterForm/";
+import LoginForm from "../../components/LoginForm/";
+
+const RegisterPage = styled.main`
+  background: #ff9966; /* fallback for old browsers */
+  background: linear-gradient(to right, #ff9966, #ff5e62);
+  padding-top: 40px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Section = styled.section`
+  background: #fff;
+  width: 500px;
+  max-width: 90%;
+  box-shadow: 1px 2px 5px rgba(0, 0, 0, .1);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+  padding: 16px;
+  overflow: hidden;
+
+  & form {
+    display: flex;
+    flex-direction: column;
+  }
+`;
 
 class Register extends Component {
-  handleChange(values) {
-    console.log(values);
-  }
-  handleUpdate(form) {
-    console.log(form);
-  }
-  handleSubmit(values) {
+  state = {
+    login: false
+  };
+
+  handleSubmitRegister(values) {
     this.props.dispatch({
       type: "REGISTER_USER",
       payload: values
     });
   }
-  render() {
-    const passwordsMatch = ({ password, confirmPassword }) => {
-      return password === confirmPassword;
-    };
-    console.log(this.props.user);
+
+  render({}, { login }) {
     return (
-      <div class={styles.home}>
+      <RegisterPage>
         {this.props.user.loading
           ? <div>Loading...</div>
-          : <LocalForm
-              // onUpdate={form => this.handleUpdate(form)}
-              // onChange={values => this.handleChange(values)}
-              onSubmit={values => this.handleSubmit(values)}
-              validators={{
-                "": { passwordsMatch }
-              }}
-            >
-              <label htmlFor="user.name">Name:</label>
-              <Control.text
-                model=".name"
-                id="user.name"
-                validators={{
-                  required: val => val && val.length // ES6 property shorthand
-                }}
-              />
-              <label htmlFor="user.email">Email:</label>
-              <Control.text
-                type="email"
-                model=".email"
-                id="user.email"
-                validators={{
-                  required: val => val && val.length
-                }}
-              />
-              <label htmlFor="user.password">Password:</label>
-              <Control.text
-                type="password"
-                model=".password"
-                id="user.password"
-                validators={{
-                  required: val => val && val.length
-                }}
-              />
-              <label htmlFor="user.confirmPassword">Repeat Password:</label>
-              <Control.text
-                type="password"
-                model=".confirmPassword"
-                id="user.confirmPassword"
-                validators={{
-                  required: val => val && val.length
-                }}
-              />
-              <Control.text model=".name" value="Submit" type="submit" />
-            </LocalForm>}
-      </div>
+          : <Section>
+              <FadeIn duration="0.4s">
+                <Tabs>
+                  <TabItem
+                    onClick={() => this.setState({ login: false })}
+                    active={!login}
+                  >
+                    Register
+                  </TabItem>
+                  <TabItem
+                    onClick={() => this.setState({ login: true })}
+                    active={login}
+                  >
+                    Login
+                  </TabItem>
+                </Tabs>
+                {this.state.login
+                  ? <SlideInRight duration="0.5s">
+                      <LoginForm handleSubmit={() => console.log("asd")} />
+                    </SlideInRight>
+                  : <SlideInLeft duration="0.5s">
+                      <RegisterForm handleSubmit={this.handleSubmitRegister} />
+                    </SlideInLeft>}
+              </FadeIn>
+            </Section>}
+      </RegisterPage>
     );
   }
 }

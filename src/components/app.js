@@ -1,15 +1,28 @@
 import { h, Component } from "preact";
 import { Router } from "preact-router";
-
+import { connect } from "preact-redux";
+import { loggedIn } from "../api/user";
 import Header from "./header";
 import Home from "../routes/home";
 import Register from "../routes/register";
-import Profile from "../routes/profile";
+import Dashboard from "../routes/dashboard";
 
-export default class App extends Component {
+class App extends Component {
   handleRoute = e => {
     this.currentUrl = e.url;
+    loggedIn().then(rsp => {
+      if (rsp.user) {
+        this.props.dispatch({ type: "LOGGED_USER" });
+      }
+    });
   };
+
+  componentWillMount = () =>
+    loggedIn().then(rsp => {
+      if (rsp.user) {
+        this.props.dispatch({ type: "LOGGED_USER" });
+      }
+    });
 
   render() {
     return (
@@ -18,9 +31,11 @@ export default class App extends Component {
         <Router onChange={this.handleRoute}>
           <Home path="/" />
           <Register path="/register" />
-          <Profile path="/profile/:user" />
+          <Dashboard path="/dashboard" />
         </Router>
       </div>
     );
   }
 }
+
+export default connect()(App);

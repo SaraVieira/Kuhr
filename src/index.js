@@ -11,11 +11,13 @@ import App from "./components/app";
 import user from "./state/reducers/users";
 import payments from "./state/reducers/payments";
 import cards from "./state/reducers/cards";
+import loggedIn from "./state/reducers/loggedIn";
 
 const reducers = combineReducers({
   user,
   payments,
-  cards
+  cards,
+  loggedIn
 });
 
 const networkInterface = createNetworkInterface({
