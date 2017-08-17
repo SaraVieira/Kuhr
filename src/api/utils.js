@@ -1,7 +1,9 @@
 import { Lokka } from "lokka";
 import { Transport } from "lokka-transport-http";
 const headers = {
-  Authorization: `Bearer ${localStorage.getItem("kuhrToken") || ""}`
+  Authorization: `Bearer ${typeof window !== "undefined"
+    ? localStorage.getItem("kuhrToken") || ""
+    : ""}`
 };
 
 const client = new Lokka({

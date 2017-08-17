@@ -2,6 +2,7 @@ import { h, Component } from "preact";
 import { connect } from "preact-redux";
 import { route } from "preact-router";
 import { loggedIn } from "../../api/user";
+import { getPayments } from "../../api/payments";
 import style from "./style";
 
 class Dashboard extends Component {
@@ -15,6 +16,7 @@ class Dashboard extends Component {
 
   // Note: `user` comes from the URL, courtesy of our router
   render() {
+    getPayments().then(rsp => console.log(rsp));
     return (
       <div class={style.profile}>
         <p>This is the user profile for a user named.</p>
